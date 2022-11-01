@@ -13,7 +13,7 @@ Lysine acetylation (kace) as an important form of PTM plays an important role in
 ![BERT_Kace_architecture](https://github.com/leo97king/BERT-kace/blob/main/image/BERT_Kace_architecture.png)
 
 ## System requirement
-LMetalSite is developed under Linux environment with:  
+BERT-kace is developed under Linux environment with:  
 python  3.6.8  
 numpy  1.19.1  
 pandas  1.1.5  
