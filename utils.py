@@ -1,14 +1,19 @@
-import json
-import sys
 import numpy as np
-import warnings
-import os
+import pandas as pd
+import joblib,json,sys,os,warnings
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Bidirectional, LSTM, Dropout, Dense, Activation, Flatten,Reshape
+from tensorflow.keras.optimizers import Adam
+from xgboost.sklearn import XGBClassifier
+from keras.models import load_model
+from sklearn.metrics import f1_score, precision_recall_curve, roc_auc_score,confusion_matrix ,precision_recall_curve,average_precision_score
+
 if not sys.warnoptions:
     warnings.simplefilter("ignore")
     os.environ["PYTHONWARNINGS"] = "ignore" # Also affect subprocesses
 warnings.filterwarnings("ignore")
 warnings.filterwarnings("ignore")
-import os
 
 def fasta2str(in_file, out_file):    # Converting sequences into a format that bertmodel can use
     ngram = 1
@@ -98,7 +103,7 @@ def ex_json_all(input_file,output_file): # extracting all features from json fil
 def get_features(file_name,sp_name):
     out_name = './temp.txt'
     out_json = './temp/temp.json'
-    out_fea = './temp/temp.fea'
+    out_fea = './temp/temp.csv'
     fasta2str(file_name,out_name)
     a = bert_ex(out_name,out_json)
     
@@ -111,7 +116,44 @@ def get_features(file_name,sp_name):
         ex_json_all(out_json,out_fea)
 
 
-if __name__ == '__main__':
-    get_features("./ST.txt",'ST')
+def get_features(file_name,sp_name):
+    out_name = './temp.txt'
+    out_json = './temp/temp.json'
+    out_fea = './temp/temp.csv'
+    fasta2str(file_name,out_name)
+    a = bert_ex(out_name,out_json)
+    
+    a = 1
+    if sp_name in ['BS','CG','MT']:
+        ex_json_cls(out_json,out_fea)
+    elif sp_name in ['GK','ST']:
+        ex_json_avg(out_json,out_fea)
+    elif sp_name=='EC':
+        ex_json_all(out_json,out_fea)
+
+
+def load_predict_model(sp_name):
+    if sp_name in ['BS','GK','MT','ST']:
+        model=joblib.load('predict_model/model_{}.pkl'.format(sp_name))
+    elif sp_name in ['CG','EC']:
+        model=load_model('predict_model/model_{}.h5'.format(sp_name))
+    return model
+
+def do_predict(sp_name):
+    
+    print('Loading predictmodel')
+    model = load_predict_model(sp_name)
+    print('Reading test feature')
+    feature=np.array(pd.read_csv('./temp/temp.csv'))
+    if sp_name=='EC':
+        feature = np.array(feature).astype(np.float)
+        feature = feature.reshape(-1,21,768).transpose(0,2,1).reshape(-1,768,1,21)
+    elif sp_name=='CG':
+        feature = np.array(feature).astype(np.float).reshape(-1,1,768)
+    
+    pred=model.predict(feature)
+    prob = model.predict_proba(feature)
+    np.savetxt('./result/prob.txt',pred,fmt='%s')
+    print('Saved Result')
 
 
