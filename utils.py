@@ -153,7 +153,7 @@ def do_predict(sp_name):
     
     pred=model.predict(feature)
     prob = model.predict_proba(feature)
-    np.savetxt('./result/prob.txt',pred,fmt='%s')
+    np.savetxt('./temp/prob.txt',pred,fmt='%s')
     print('Saved Result')
 
 

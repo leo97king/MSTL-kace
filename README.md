@@ -37,7 +37,7 @@ python extract_features.py \
   --batch_size=32 
 ```
 
-2. Run `./bert_kace_predict.py`. We also provide the corresponding canonical prediction results in `./result/prob.txt` for your reference.
+2. Run `./bert_kace_predict.py`. We also provide the corresponding canonical prediction results in `./temp/prob.txt` for your reference.
 
 
 
