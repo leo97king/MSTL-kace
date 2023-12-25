@@ -39,5 +39,5 @@ python extract_features.py \
 ## Dataset and model
 We provide the datasets and the trained  models here for those interested in reproducing our paper.
 The  datasets used in this study are stored in `./data/` in fasta format.  
-The predict models  can be found under `./model/`.
+The pretrained models  can be found in [Onedrive](https://1drv.ms/f/s!AsOCwEf1UMAbrCQ03d9mzkYguQU3?e=rodelA)
 
